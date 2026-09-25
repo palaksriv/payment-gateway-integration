@@ -1,0 +1,220 @@
+{
+  "info": {
+    "_postman_id": "8f5e7c3b-9a21-4d4d-b7c2-91a4e8f6d120",
+    "name": "Payment Gateway Integration API",
+    "description": "Postman collection for testing the mock payment gateway and payment integration service.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "integration_url",
+      "value": "http://127.0.0.1:8000"
+    },
+    {
+      "key": "gateway_url",
+      "value": "http://127.0.0.1:8001"
+    },
+    {
+      "key": "order_id",
+      "value": ""
+    },
+    {
+      "key": "event_id",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{integration_url}}/api/health",
+          "host": [
+            "{{integration_url}}"
+          ],
+          "path": [
+            "api",
+            "health"
+          ]
+        }
+      }
+    },
+    {
+      "name": "2. Create Payment",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const json = pm.response.json();",
+              "pm.collectionVariables.set('order_id', json.order_id);",
+              "pm.collectionVariables.set('event_id', 'evt_' + pm.variables.replaceIn('{{$guid}}'));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"amount\": 49900,\n  \"currency\": \"INR\",\n  \"customer_id\": \"postman_customer_001\"\n}"
+        },
+        "url": {
+          "raw": "{{integration_url}}/api/payments/create",
+          "host": [
+            "{{integration_url}}"
+          ],
+          "path": [
+            "api",
+            "payments",
+            "create"
+          ]
+        }
+      }
+    },
+    {
+      "name": "3. Get Payment",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{integration_url}}/api/payments/{{order_id}}",
+          "host": [
+            "{{integration_url}}"
+          ],
+          "path": [
+            "api",
+            "payments",
+            "{{order_id}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "4. Simulate Successful Payment",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"event_id\": \"{{event_id}}\",\n  \"order_id\": \"{{order_id}}\",\n  \"event\": \"payment.completed\",\n  \"status\": \"paid\"\n}"
+        },
+        "url": {
+          "raw": "{{gateway_url}}/api/payments/simulate",
+          "host": [
+            "{{gateway_url}}"
+          ],
+          "path": [
+            "api",
+            "payments",
+            "simulate"
+          ]
+        }
+      }
+    },
+    {
+      "name": "5. Get Updated Payment",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{integration_url}}/api/payments/{{order_id}}",
+          "host": [
+            "{{integration_url}}"
+          ],
+          "path": [
+            "api",
+            "payments",
+            "{{order_id}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "6. Simulate Failed Payment",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"event_id\": \"evt_failed_demo\",\n  \"order_id\": \"{{order_id}}\",\n  \"event\": \"payment.failed\",\n  \"status\": \"failed\"\n}"
+        },
+        "url": {
+          "raw": "{{gateway_url}}/api/payments/simulate",
+          "host": [
+            "{{gateway_url}}"
+          ],
+          "path": [
+            "api",
+            "payments",
+            "simulate"
+          ]
+        }
+      }
+    },
+    {
+      "name": "7. Duplicate Webhook Event",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"event_id\": \"{{event_id}}\",\n  \"order_id\": \"{{order_id}}\",\n  \"event\": \"payment.completed\",\n  \"status\": \"paid\"\n}"
+        },
+        "url": {
+          "raw": "{{gateway_url}}/api/payments/simulate",
+          "host": [
+            "{{gateway_url}}"
+          ],
+          "path": [
+            "api",
+            "payments",
+            "simulate"
+          ]
+        }
+      }
+    },
+    {
+      "name": "8. Nonexistent Payment",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{integration_url}}/api/payments/order_does_not_exist",
+          "host": [
+            "{{integration_url}}"
+          ],
+          "path": [
+            "api",
+            "payments",
+            "order_does_not_exist"
+          ]
+        }
+      }
+    }
+  ]
+}
