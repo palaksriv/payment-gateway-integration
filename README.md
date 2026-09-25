@@ -2,57 +2,15 @@
 
 
 
-A backend payment integration project built with \*\*FastAPI\*\* that demonstrates REST API integration, payment lifecycle management, signed webhooks, HMAC-SHA256 verification, idempotent event processing, database persistence, automated testing, and Postman API testing.
-
-
-
-> \*\*Note:\*\* This project uses a locally implemented mock payment gateway for educational and portfolio purposes. It does \*\*not\*\* process real payments.
-
-
-
-\---
-
-
-
 \## Overview
 
 
 
-This project simulates a payment integration system where an integration service communicates with a mock payment gateway through REST APIs.
+Backend payment integration service built with FastAPI that demonstrates REST API communication, payment lifecycle management, webhook processing, HMAC-SHA256 signature verification, idempotent event handling, SQLite persistence, automated testing, and Postman API testing.
 
 
 
-The system demonstrates common backend payment-integration patterns including:
-
-
-
-\* Payment/order creation
-
-\* Payment status tracking
-
-\* REST API communication
-
-\* Webhook-based payment updates
-
-\* HMAC-SHA256 webhook signature verification
-
-\* Idempotent webhook processing
-
-\* SQLite database persistence
-
-\* Error handling
-
-\* Automated API testing with Pytest
-
-\* API testing through Postman
-
-
-
-The project intentionally focuses on the \*\*backend integration layer\*\* rather than building a frontend UI.
-
-
-
-\---
+This project uses a \*\*locally implemented mock payment gateway\*\* for educational and portfolio purposes. It does not process real payments.
 
 
 
@@ -62,189 +20,79 @@ The project intentionally focuses on the \*\*backend integration layer\*\* rathe
 
 ```text
 
-&#x20;                   Client / Postman
+Client / Postman
 
-&#x20;                          |
+&#x20;      |
 
-&#x20;                          | HTTP / REST
+&#x20;      | HTTP / REST
 
-&#x20;                          v
+&#x20;      v
 
-&#x20;             +--------------------------+
+Payment Integration Service
 
-&#x20;             | Payment Integration       |
+FastAPI :8000
 
-&#x20;             | Service                  |
+&#x20;      |
 
-&#x20;             | FastAPI :8000            |
+&#x20;      | HTTP / REST
 
-&#x20;             +------------+-------------+
+&#x20;      | HTTPX
 
-&#x20;                          |
+&#x20;      v
 
-&#x20;                          | HTTP / REST
+Mock Payment Gateway
 
-&#x20;                          | HTTPX
+FastAPI :8001
 
-&#x20;                          v
+&#x20;      |
 
-&#x20;             +--------------------------+
+&#x20;      | Signed Webhook
 
-&#x20;             | Mock Payment Gateway      |
+&#x20;      | HMAC-SHA256
 
-&#x20;             | FastAPI :8001            |
+&#x20;      v
 
-&#x20;             +------------+-------------+
+Webhook Handler
 
-&#x20;                          |
+&#x20;      |
 
-&#x20;                          | Signed Webhook
+&#x20;      v
 
-&#x20;                          | HMAC-SHA256
+SQLite Database
 
-&#x20;                          v
-
-&#x20;             +--------------------------+
-
-&#x20;             | Webhook Handler           |
-
-&#x20;             | Payment Integration       |
-
-&#x20;             | Service                  |
-
-&#x20;             +------------+-------------+
-
-&#x20;                          |
-
-&#x20;                          v
-
-&#x20;             +--------------------------+
-
-&#x20;             | SQLite Database           |
-
-&#x20;             | SQLAlchemy                |
-
-&#x20;             +--------------------------+
+SQLAlchemy
 
 ```
 
 
 
-\---
+\## Features
 
 
 
-\## Key Features
+\- Create and manage payment records.
 
+\- Communicate with a mock payment gateway through REST APIs.
 
+\- Track payment status from creation through success or failure.
 
-\### Payment Integration
+\- Process payment webhooks.
 
+\- Verify webhook signatures using HMAC-SHA256.
 
+\- Reject missing or invalid webhook signatures.
 
-\* REST API communication between services
+\- Prevent duplicate webhook processing using event IDs.
 
-\* Payment/order creation
+\- Persist payment and webhook data using SQLite and SQLAlchemy.
 
-\* Payment retrieval
+\- Simulate successful and failed payments.
 
-\* Payment status tracking
+\- Test APIs using Postman.
 
-\* Successful payment simulation
+\- Run automated API tests using Pytest and pytest-asyncio.
 
-\* Failed payment simulation
-
-
-
-\### Webhooks
-
-
-
-\* Webhook-based payment status updates
-
-\* HMAC-SHA256 signature generation
-
-\* HMAC-SHA256 signature verification
-
-\* Missing signature rejection
-
-\* Invalid signature rejection
-
-
-
-\### Idempotency
-
-
-
-Webhook events contain a unique `event\_id`.
-
-
-
-Processed event IDs are stored in the database so that duplicate webhook deliveries do not process the same event multiple times.
-
-
-
-Example response for an already processed event:
-
-
-
-```json
-
-{
-
-&#x20; "status": "already\_processed"
-
-}
-
-```
-
-
-
-\### Database
-
-
-
-The project uses:
-
-
-
-\* SQLite
-
-\* SQLAlchemy
-
-
-
-Payment records and processed webhook event IDs are persisted locally.
-
-
-
-\### Testing
-
-
-
-The project includes automated API tests using:
-
-
-
-\* Pytest
-
-\* pytest-asyncio
-
-
-
-The current test suite contains \*\*7 passing tests\*\* covering health checks, payment operations, validation, webhook security, and error handling.
-
-
-
-\### API Testing
-
-
-
-A Postman collection is included for manually testing the API workflow.
-
-
-
-\---
+\- Handle invalid requests and nonexistent payments.
 
 
 
@@ -252,35 +100,27 @@ A Postman collection is included for manually testing the API workflow.
 
 
 
-| Technology     | Purpose                          |
+\- Python
 
-| -------------- | -------------------------------- |
+\- FastAPI
 
-| Python         | Backend development              |
+\- HTTPX
 
-| FastAPI        | REST API services                |
+\- SQLAlchemy
 
-| HTTPX          | Service-to-service HTTP requests |
+\- SQLite
 
-| SQLAlchemy     | Database ORM                     |
+\- Pydantic
 
-| SQLite         | Local persistence                |
+\- Pytest
 
-| Pydantic       | Request/response validation      |
+\- pytest-asyncio
 
-| HMAC-SHA256    | Webhook signature verification   |
+\- Postman
 
-| Pytest         | Automated testing                |
+\- HMAC-SHA256
 
-| pytest-asyncio | Async API testing                |
-
-| Postman        | API testing                      |
-
-| Git / GitHub   | Version control                  |
-
-
-
-\---
+\- Git / GitHub
 
 
 
@@ -296,15 +136,11 @@ payment-gateway-integration/
 
 ├── integration\_service/
 
-│   ├── ...
-
 │   └── ...
 
 │
 
 ├── mock\_gateway/
-
-│   ├── ...
 
 │   └── ...
 
@@ -322,43 +158,33 @@ payment-gateway-integration/
 
 ├── README.md
 
-├── requirements.txt
-
-└── ...
+└── requirements.txt
 
 ```
 
 
 
-> The exact Python modules may vary as the project evolves. Local `.env` files and generated database files are intentionally excluded from version control.
+Local `.env` files, virtual environments, database files, caches, and logs are excluded from version control.
 
 
 
-\---
+\## Setup
 
 
 
-\# Getting Started
+\### Prerequisites
 
 
 
-\## Prerequisites
+\- Python 3.10+
+
+\- Git
+
+\- Postman
 
 
 
-Make sure the following are installed:
-
-
-
-\* Python 3.10+
-
-\* Git
-
-\* Postman
-
-
-
-Check your Python installation:
+Check Python:
 
 
 
@@ -382,11 +208,7 @@ git --version
 
 
 
-\---
-
-
-
-\## Clone the Repository
+\### Clone Repository
 
 
 
@@ -400,15 +222,7 @@ cd payment-gateway-integration
 
 
 
-\---
-
-
-
-\## Create a Virtual Environment
-
-
-
-\### Windows PowerShell
+\### Create Virtual Environment
 
 
 
@@ -432,7 +246,7 @@ Activate it:
 
 
 
-If PowerShell blocks activation, run:
+If PowerShell blocks activation:
 
 
 
@@ -456,11 +270,7 @@ Then:
 
 
 
-\---
-
-
-
-\## Install Dependencies
+\### Install Dependencies
 
 
 
@@ -472,19 +282,11 @@ pip install -r requirements.txt
 
 
 
-\---
+\## Environment Variables
 
 
 
-\# Environment Variables
-
-
-
-The project can use a local `.env` file for configuration and secrets.
-
-
-
-Create it locally:
+Create a local `.env` file if required by the project configuration:
 
 
 
@@ -508,49 +310,33 @@ WEBHOOK\_SECRET=your-local-webhook-secret
 
 
 
-The `.env` file is \*\*not committed to GitHub\*\*.
+Keep secrets local. The `.env` file is excluded from Git.
 
 
 
-Sensitive configuration should remain local.
+\## Running the Application
 
 
 
-\---
+The project uses two FastAPI services.
 
 
 
-\# Running the Application
+| Service | Port |
+
+|---|---:|
+
+| Payment Integration Service | 8000 |
+
+| Mock Payment Gateway | 8001 |
 
 
 
-The project contains two FastAPI services:
+\### Start the Mock Payment Gateway
 
 
 
-| Service                     |   Port |
-
-| --------------------------- | -----: |
-
-| Payment Integration Service | `8000` |
-
-| Mock Payment Gateway        | `8001` |
-
-
-
-Run each service in a separate PowerShell terminal.
-
-
-
-\---
-
-
-
-\## Terminal 1 — Mock Payment Gateway
-
-
-
-Activate the virtual environment:
+In one PowerShell terminal:
 
 
 
@@ -558,23 +344,13 @@ Activate the virtual environment:
 
 .\\.venv\\Scripts\\Activate.ps1
 
-```
-
-
-
-Start the mock gateway:
-
-
-
-```powershell
-
 uvicorn mock\_gateway.main:app --reload --port 8001
 
 ```
 
 
 
-The mock gateway will be available at:
+The service runs at:
 
 
 
@@ -586,7 +362,7 @@ http://127.0.0.1:8001
 
 
 
-FastAPI documentation:
+Swagger documentation:
 
 
 
@@ -598,15 +374,11 @@ http://127.0.0.1:8001/docs
 
 
 
-\---
+\### Start the Payment Integration Service
 
 
 
-\## Terminal 2 — Payment Integration Service
-
-
-
-Activate the virtual environment:
+In a second PowerShell terminal:
 
 
 
@@ -614,23 +386,13 @@ Activate the virtual environment:
 
 .\\.venv\\Scripts\\Activate.ps1
 
-```
-
-
-
-Start the integration service:
-
-
-
-```powershell
-
 uvicorn integration\_service.main:app --reload --port 8000
 
 ```
 
 
 
-The integration service will be available at:
+The service runs at:
 
 
 
@@ -642,7 +404,7 @@ http://127.0.0.1:8000
 
 
 
-FastAPI documentation:
+Swagger documentation:
 
 
 
@@ -654,155 +416,41 @@ http://127.0.0.1:8000/docs
 
 
 
-> If the project's actual entry-point module differs, use the corresponding module path from the repository.
+\## API Workflow
 
 
 
-\---
+The main payment workflow is:
 
 
 
-\# API Endpoints
+1\. Client sends a payment request.
 
+2\. Payment Integration Service receives the request.
 
+3\. Integration Service calls the Mock Payment Gateway.
 
-The main workflow includes endpoints for:
+4\. Mock Gateway creates the payment/order.
 
+5\. Integration Service stores the payment in SQLite.
 
+6\. Mock Gateway simulates a payment event.
 
-| Operation             | Purpose                  |
+7\. Mock Gateway sends a signed webhook.
 
-| --------------------- | ------------------------ |
+8\. Integration Service verifies the webhook signature.
 
-| `GET /health`         | Service health check     |
+9\. The webhook event ID is checked for duplicates.
 
-| `POST /payments`      | Create a payment         |
+10\. Payment status is updated.
 
-| `GET /payments/{id}`  | Retrieve a payment       |
 
-| Webhook endpoint      | Receive payment events   |
 
-| Mock payment endpoint | Simulate payment results |
+\## Payment States
 
 
 
-The exact endpoint paths can also be viewed through the automatically generated FastAPI Swagger documentation:
-
-
-
-```text
-
-http://127.0.0.1:8000/docs
-
-```
-
-
-
-and
-
-
-
-```text
-
-http://127.0.0.1:8001/docs
-
-```
-
-
-
-\---
-
-
-
-\# Payment Flow
-
-
-
-The complete simulated payment flow is:
-
-
-
-```text
-
-1\. Client / Postman
-
-&#x20;       |
-
-&#x20;       | Create payment
-
-&#x20;       v
-
-2\. Payment Integration Service
-
-&#x20;       |
-
-&#x20;       | HTTP request
-
-&#x20;       v
-
-3\. Mock Payment Gateway
-
-&#x20;       |
-
-&#x20;       | Creates payment/order
-
-&#x20;       v
-
-4\. Integration Service
-
-&#x20;       |
-
-&#x20;       | Stores payment
-
-&#x20;       v
-
-5\. SQLite Database
-
-&#x20;       |
-
-&#x20;       | Payment event
-
-&#x20;       v
-
-6\. Mock Payment Gateway
-
-&#x20;       |
-
-&#x20;       | HMAC-SHA256 signed webhook
-
-&#x20;       v
-
-7\. Webhook Handler
-
-&#x20;       |
-
-&#x20;       | Verify signature
-
-&#x20;       v
-
-8\. Check event\_id
-
-&#x20;       |
-
-&#x20;       | Prevent duplicate processing
-
-&#x20;       v
-
-9\. Update Payment Status
-
-```
-
-
-
-\---
-
-
-
-\# Payment States
-
-
-
-The simulated payment lifecycle supports:
+The project supports the following payment lifecycle:
 
 
 
@@ -822,7 +470,7 @@ created
 
 
 
-\### Successful Payment
+Successful payment:
 
 
 
@@ -834,7 +482,7 @@ created → paid
 
 
 
-\### Failed Payment
+Failed payment:
 
 
 
@@ -846,19 +494,15 @@ created → failed
 
 
 
-\---
+\## Webhook Security
 
 
 
-\# Webhook Security
+Webhook requests use HMAC-SHA256 signatures to verify their authenticity.
 
 
 
-Webhook requests are protected using an HMAC-SHA256 signature.
-
-
-
-The webhook request contains:
+The webhook includes:
 
 
 
@@ -870,15 +514,15 @@ X-Webhook-Signature
 
 
 
-The receiving service calculates the expected signature using the shared webhook secret and compares it with the received signature.
+The Integration Service calculates the expected signature using the configured webhook secret and compares it with the received signature.
+
+
+
+Invalid requests are rejected.
 
 
 
 \### Missing Signature
-
-
-
-If the webhook does not contain the required signature:
 
 
 
@@ -894,10 +538,6 @@ If the webhook does not contain the required signature:
 
 
 
-If the signature does not match:
-
-
-
 ```text
 
 401 Unauthorized
@@ -906,35 +546,15 @@ If the signature does not match:
 
 
 
-This demonstrates a common pattern used to verify that webhook payloads came from a trusted source.
+\## Webhook Idempotency
 
 
 
-\---
+Webhook providers can retry events, so the same event may be delivered more than once.
 
 
 
-\# Webhook Idempotency
-
-
-
-Webhook providers may retry event delivery.
-
-
-
-Without idempotency, the same payment event could potentially be processed multiple times.
-
-
-
-This project prevents that by assigning each webhook event a unique:
-
-
-
-```text
-
-event\_id
-
-```
+This project uses a unique `event\_id` to prevent duplicate processing.
 
 
 
@@ -942,7 +562,7 @@ Processed event IDs are stored in the database.
 
 
 
-When the same event is received again, the service detects the duplicate and returns:
+If an already processed event is received again:
 
 
 
@@ -958,19 +578,11 @@ When the same event is received again, the service detects the duplicate and ret
 
 
 
-This prevents duplicate processing of the same payment event.
+This prevents duplicate payment status updates and demonstrates idempotent webhook processing.
 
 
 
-\---
-
-
-
-\# Example Payment Request
-
-
-
-Example request:
+\## Example Payment Request
 
 
 
@@ -981,10 +593,6 @@ POST /payments
 Content-Type: application/json
 
 ```
-
-
-
-Example JSON:
 
 
 
@@ -1004,19 +612,7 @@ Example JSON:
 
 
 
-The integration service processes the request and communicates with the mock payment gateway.
-
-
-
-\---
-
-
-
-\# Example Webhook Event
-
-
-
-A simulated webhook event follows the general structure:
+\## Example Webhook Event
 
 
 
@@ -1036,43 +632,41 @@ A simulated webhook event follows the general structure:
 
 
 
-The mock gateway signs the webhook using HMAC-SHA256 before sending it to the integration service.
+The Mock Payment Gateway signs the webhook using HMAC-SHA256 before sending it to the Integration Service.
 
 
 
-The integration service:
+The Integration Service then:
 
 
 
-1\. Receives the webhook
+1\. Receives the webhook.
 
-2\. Reads the signature
+2\. Reads the signature.
 
-3\. Calculates the expected HMAC-SHA256 signature
+3\. Calculates the expected signature.
 
-4\. Verifies the signature
+4\. Verifies the signature.
 
-5\. Checks whether `event\_id` was already processed
+5\. Checks the `event\_id`.
 
-6\. Stores the event if it is new
+6\. Rejects the event if it was already processed.
 
-7\. Updates the payment status
+7\. Stores the new event.
 
-
-
-\---
+8\. Updates the payment status.
 
 
 
-\# Postman Testing
+\## Postman Testing
 
 
 
-The project includes a Postman workflow for testing the complete payment lifecycle.
+The Postman workflow covers the complete payment lifecycle.
 
 
 
-The demonstrated scenarios include:
+Tested scenarios include:
 
 
 
@@ -1094,15 +688,7 @@ The demonstrated scenarios include:
 
 
 
-The Postman workflow was successfully tested against the local services.
-
-
-
-\---
-
-
-
-\# Automated Testing
+\## Automated Testing
 
 
 
@@ -1118,7 +704,7 @@ pytest
 
 
 
-The current test suite contains:
+Current test result:
 
 
 
@@ -1134,31 +720,23 @@ Tests cover:
 
 
 
-\* Health check
+\- Health check
 
-\* Payment creation
+\- Payment creation
 
-\* Payment retrieval
+\- Payment retrieval
 
-\* Invalid payment amount
+\- Invalid payment amount
 
-\* Missing webhook signature
+\- Missing webhook signature
 
-\* Invalid webhook signature
+\- Invalid webhook signature
 
-\* Nonexistent payment handling
-
-
-
-\---
+\- Nonexistent payment handling
 
 
 
-\# What This Project Demonstrates
-
-
-
-This project demonstrates practical backend and API-integration concepts including:
+\## What This Project Demonstrates
 
 
 
@@ -1166,13 +744,13 @@ This project demonstrates practical backend and API-integration concepts includi
 
 
 
-\* FastAPI REST services
+\- FastAPI REST APIs
 
-\* Request validation
+\- Request validation
 
-\* HTTP error handling
+\- Error handling
 
-\* Service-to-service communication
+\- Service-to-service communication
 
 
 
@@ -1180,13 +758,13 @@ This project demonstrates practical backend and API-integration concepts includi
 
 
 
-\* Consuming another REST API using HTTPX
+\- REST API consumption using HTTPX
 
-\* Designing an integration layer
+\- Backend integration patterns
 
-\* Handling external API responses
+\- External API response handling
 
-\* Payment lifecycle management
+\- Payment lifecycle management
 
 
 
@@ -1194,13 +772,13 @@ This project demonstrates practical backend and API-integration concepts includi
 
 
 
-\* Receiving asynchronous events
+\- Asynchronous event processing
 
-\* HMAC-SHA256 signature verification
+\- HMAC-SHA256 verification
 
-\* Webhook security
+\- Webhook security
 
-\* Duplicate event handling
+\- Idempotent event handling
 
 
 
@@ -1208,13 +786,13 @@ This project demonstrates practical backend and API-integration concepts includi
 
 
 
-\* SQLAlchemy ORM
+\- SQLAlchemy ORM
 
-\* SQLite persistence
+\- SQLite persistence
 
-\* Payment state management
+\- Payment state management
 
-\* Processed-event tracking
+\- Processed webhook event tracking
 
 
 
@@ -1222,41 +800,21 @@ This project demonstrates practical backend and API-integration concepts includi
 
 
 
-\* Automated API testing
+\- Pytest
 
-\* Pytest
+\- pytest-asyncio
 
-\* Async testing
+\- Automated API testing
 
-\* Postman-based API testing
-
-
-
-\### Software Engineering
+\- Postman API testing
 
 
 
-\* Environment-based configuration
-
-\* Git version control
-
-\* `.gitignore` configuration
-
-\* Separation of services
-
-\* API documentation through FastAPI Swagger
+\## Security
 
 
 
-\---
-
-
-
-\# Security and Configuration
-
-
-
-The repository excludes local and sensitive files through `.gitignore`, including:
+The project uses `.gitignore` to exclude local and generated files such as:
 
 
 
@@ -1290,15 +848,11 @@ Secrets and local configuration should never be committed to GitHub.
 
 
 
-\---
+\## Disclaimer
 
 
 
-\# Disclaimer
-
-
-
-This project is a \*\*locally implemented mock payment gateway integration for educational and portfolio purposes\*\*.
+This is a \*\*local mock payment gateway integration built for educational and portfolio purposes\*\*.
 
 
 
@@ -1306,27 +860,7 @@ It does not connect to or process payments through a real payment provider.
 
 
 
-The payment gateway is simulated locally to demonstrate backend integration patterns such as:
-
-
-
-\* REST APIs
-
-\* Webhooks
-
-\* HMAC signature verification
-
-\* Idempotency
-
-\* Payment state management
-
-\* Database persistence
-
-\* API testing
-
-
-
-\---
+The project demonstrates payment integration concepts including REST APIs, webhooks, HMAC-SHA256 verification, idempotency, database persistence, API testing, and error handling.
 
 
 
@@ -1338,9 +872,5 @@ The payment gateway is simulated locally to demonstrate backend integration patt
 
 
 
-GitHub:
-
-https://github.com/palaksriv
-
-
+\[GitHub](https://github.com/palaksriv)
 
